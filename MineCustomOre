@@ -1,0 +1,85 @@
+package me.isaac.customores.api.customores.events;
+
+import java.util.Random;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.inventory.ItemStack;
+
+import me.isaac.customores.api.customores.CustomOreManager;
+
+public class MineCustomOre implements Listener {
+	
+	@EventHandler
+	public void onBreak(BlockDamageEvent e) {
+		
+		Material blockMaterial = e.getBlock().getType();
+		
+		Location loc = e.getBlock().getLocation();
+		
+		int max = CustomOreManager.getInstance().getCustomOres().size();
+		int min = 0;
+		
+		int choose = 0;
+		
+		Random rand = new Random();
+		
+		int random;
+		
+		if (CustomOreManager.getInstance().getCustomOreMaterials().contains(blockMaterial)) {
+			
+			if (!CustomOreManager.getInstance().getCPMap().containsKey(loc)) {
+				
+				random = rand.nextInt(max - min + 1) + min;
+				
+				if (random == 0) {
+					CustomOreManager.getInstance().addCOMap(loc, null);
+				} else {
+					
+					for (int i = 0; i < max; i++) {
+						
+						choose = CustomOreManager.getInstance().getCustomOres().get(i).getNumber();
+						
+						if (random == choose) {
+							
+							if (CustomOreManager.getInstance().getCustomOres().get(i).getMaterial().equals(blockMaterial)) {
+								CustomOreManager.getInstance().addCOMap(loc, CustomOreManager.getInstance().getCustomOres().get(i));
+							} else {
+								CustomOreManager.getInstance().addCOMap(loc, null);
+							}
+							
+						}
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e) {
+		
+		Location loc = e.getBlock().getLocation();
+		
+		if (CustomOreManager.getInstance().getCPMap().containsKey(loc)) {
+			
+			ItemStack item = CustomOreManager.getInstance().getCPMap().get(loc).getDrop();
+			
+			CustomOreManager.getInstance().addCOMap(loc, null);
+			
+			e.setCancelled(true);
+			e.getBlock().setType(Material.AIR);
+			loc.getWorld().dropItemNaturally(loc, item);
+			
+		}
+		
+	}
+
+}
