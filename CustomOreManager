@@ -1,0 +1,64 @@
+package me.isaac.customores.api.customores;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+
+public class CustomOreManager {
+	
+	private CustomOreManager() {}
+	public static CustomOreManager instance = new CustomOreManager();
+	public static CustomOreManager getInstance() {
+		return instance;
+	}
+	
+	private List<CustomOre> customOre = new ArrayList<>();
+	private ArrayList<Material> COMaterials = new ArrayList<Material>();
+	private HashMap<Location, CustomOre> COMap = new HashMap<Location, CustomOre>();
+	
+	public HashMap<Location, CustomOre> getCPMap() {
+		return COMap;
+	}
+	
+	public void addCOMap(Location location, CustomOre customOre) {
+		COMap.put(location, customOre);
+	}
+	
+	public void removeCOMap(Location location) {
+		COMap.remove(location);
+	}
+	
+	public ArrayList<Material> getCustomOreMaterials() {
+		return COMaterials;
+	}
+	
+	public Material getCOMaterial(CustomOre customOre) {
+		
+		return customOre.getMaterial();
+		
+	}
+	
+	public void addCOMaterial(Material material) {
+		COMaterials.add(material);
+	}
+	
+	public void removeCOMaterial(Material material) {
+		COMaterials.remove(material);
+	}
+	
+	public List<CustomOre> getCustomOres() {
+		return customOre;
+	}
+	
+	public void addCustomOre(CustomOre ore) {
+		customOre.add(ore);
+	}
+	
+	public void removeCustomOre(CustomOre ore) {
+		customOre.remove(ore);
+	}
+
+}
