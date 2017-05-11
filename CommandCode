@@ -1,0 +1,47 @@
+package me.isaac.test.commands;
+
+import java.lang.reflect.Field;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+
+import me.isaac.test.Main;
+import net.minecraft.server.v1_11_R1.PacketPlayOutNamedEntitySpawn;
+
+public class SetCustomName implements CommandExecutor {
+	
+	public Main plugin;
+	public SetCustomName(Main pl) {
+		plugin = pl;
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
+		if (!(sender instanceof Player)) {
+			return true;
+		}
+		
+		Player player = (Player) sender;
+		
+		PacketPlayOutNamedEntitySpawn npc = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) player).getHandle());
+		try {
+			Field field = npc.getClass().getDeclaredField("a");
+			field.setAccessible(true);
+			
+			field.setInt(npc, 123);
+			field.setAccessible(!field.isAccessible());
+			
+		} catch(Exception x) {
+			x.printStackTrace();
+		}
+		
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(npc);
+		
+		
+		return true;
+	}
+
+}
